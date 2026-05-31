@@ -7,6 +7,8 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Catalog from './pages/Catalog'
+import Stats from './pages/Stats'
+import Profile from './pages/Profile'
 
 function Layout({ children, showNav = true }) {
   return (
@@ -14,6 +16,14 @@ function Layout({ children, showNav = true }) {
       {showNav && <Navbar />}
       <main>{children}</main>
     </div>
+  )
+}
+
+function PrivateLayout({ children }) {
+  return (
+    <AuthGuard>
+      <Layout>{children}</Layout>
+    </AuthGuard>
   )
 }
 
@@ -25,18 +35,13 @@ export default function App() {
           <Route path="/" element={<Layout showNav={false}><Home /></Layout>} />
           <Route path="/login" element={<Layout showNav={false}><Login /></Layout>} />
           <Route path="/register" element={<Layout showNav={false}><Register /></Layout>} />
-          <Route 
-            path="/catalog" 
-            element={
-              <AuthGuard>
-                <Layout><Catalog /></Layout>
-              </AuthGuard>
-            } 
-          />
+          <Route path="/catalog" element={<PrivateLayout><Catalog /></PrivateLayout>} />
+          <Route path="/stats" element={<PrivateLayout><Stats /></PrivateLayout>} />
+          <Route path="/profile" element={<PrivateLayout><Profile /></PrivateLayout>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
 
-        <Toaster 
+        <Toaster
           position="bottom-right"
           toastOptions={{
             style: {
