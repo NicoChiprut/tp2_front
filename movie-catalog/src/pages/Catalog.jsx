@@ -1,16 +1,16 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useContext } from 'react'
 import { useMovies } from '../hooks/useMovies'
 import MovieCard from '../components/movies/MovieCard'
 import MovieForm from '../components/movies/MovieForm'
 import LoadingSpinner from '../components/ui/LoadingSpinner'
-import { useAuth } from '../hooks/useAuth'
+import { AuthContext } from '../context/AuthContext'
 
 const FILTER_OPTIONS = ['Todas', 'Vistas', 'Pendientes']
 const GENRE_FILTER = ['Todos','Acción','Comedia','Drama','Terror','Sci-Fi','Thriller','Romance','Animación','Documental']
 
 export default function Catalog({ showOnlyMine = false }) {
   const { movies, loading, stats, addMovie, updateMovie, deleteMovie, toggleWatched } = useMovies()
-  const { user } = useAuth()
+  const { user } = useContext(AuthContext)
   const [showForm, setShowForm] = useState(false)
   const [editingMovie, setEditingMovie] = useState(null)
   const [submitting, setSubmitting] = useState(false)
