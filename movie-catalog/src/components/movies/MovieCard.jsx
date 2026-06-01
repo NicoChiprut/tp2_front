@@ -12,7 +12,8 @@ const GENRE_COLORS = {
   'Documental': 'bg-teal-500/20 text-teal-400 border-teal-500/30',
 }
 
-export default function MovieCard({ movie, onEdit, onDelete, onToggleWatched }) {
+// Agregamos isOwner a los parámetros
+export default function MovieCard({ movie, onEdit, onDelete, onToggleWatched, isOwner }) {
   const [imgError, setImgError] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
 
@@ -35,12 +36,7 @@ export default function MovieCard({ movie, onEdit, onDelete, onToggleWatched }) 
     <div className={`group relative bg-cinema-gray border rounded-lg overflow-hidden transition-all duration-300 hover:border-white/20 hover:-translate-y-1 hover:shadow-2xl hover:shadow-cinema-red/10 ${movie.watched ? 'border-white/5' : 'border-white/10'}`}>
       <div className="relative aspect-[2/3] bg-black/50 overflow-hidden">
         {movie.poster_url && !imgError ? (
-          <img 
-            src={movie.poster_url} 
-            alt={movie.title} 
-            onError={() => setImgError(true)}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
+          <img src={movie.poster_url} alt={movie.title} onError={() => setImgError(true)} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center gap-2">
             <span className="text-5xl opacity-20">🎬</span>
@@ -54,36 +50,31 @@ export default function MovieCard({ movie, onEdit, onDelete, onToggleWatched }) 
           </div>
         )}
 
-        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-3">
-          <button 
-            onClick={() => onEdit(movie)}
-            className="bg-white/10 hover:bg-cinema-gold/80 border border-white/20 text-white text-xs font-body px-3 py-1.5 rounded transition-colors"
-          >
-            Editar
-          </button>
-          <button 
-            onClick={() => onToggleWatched(movie.id, movie.watched)}
-            className="bg-white/10 hover:bg-green-600/80 border border-white/20 text-white text-xs font-body px-3 py-1.5 rounded transition-colors"
-          >
-            {movie.watched ? 'Pendiente' :  'Vista ✓' }
-          </button>
-        </div>
+        {/* Solo mostramos controles si es el dueño */}
+        {isOwner && (
+          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-3">
+            <button onClick={() => onEdit(movie)} className="bg-white/10 hover:bg-cinema-gold/80 border border-white/20 text-white text-xs font-body px-3 py-1.5 rounded transition-colors">
+              Editar
+            </button>
+            <button onClick={() => onToggleWatched(movie.id, movie.watched)} className="bg-white/10 hover:bg-green-600/80 border border-white/20 text-white text-xs font-body px-3 py-1.5 rounded transition-colors">
+              {movie.watched ? 'Pendiente' :  'Vista ✓' }
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="p-3 space-y-2">
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-body font-semibold text-white text-sm leading-tight line-clamp-2">{movie.title}</h3>
-          <button 
-            onClick={() => setShowConfirm(true)}
-            className="text-white/20 hover:text-cinema-red transition-colors shrink-0 text-lg leading-none"
-          >×</button>
+          {/* Solo mostramos el botón de borrar si es el dueño */}
+          {isOwner && (
+            <button onClick={() => setShowConfirm(true)} className="text-white/20 hover:text-cinema-red transition-colors shrink-0 text-lg leading-none">×</button>
+          )}
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
           {movie.year && <span className="text-white/40 text-xs font-body">{movie.year}</span>}
-          {movie.genre && (
-            <span className={`text-xs font-body px-2 py-0.5 rounded-full border ${genreClass}`}>{movie.genre}</span>
-          )}
+          {movie.genre && <span className={`text-xs font-body px-2 py-0.5 rounded-full border ${genreClass}`}>{movie.genre}</span>}
         </div>
 
         {movie.director && <p className="text-white/30 text-xs font-body truncate">Dir. {movie.director}</p>}
@@ -93,18 +84,10 @@ export default function MovieCard({ movie, onEdit, onDelete, onToggleWatched }) 
 
       {showConfirm && (
         <div className="absolute inset-0 bg-cinema-black/95 flex flex-col items-center justify-center gap-4 p-4 z-10">
-          <p className="text-white text-sm font-body text-center">
-            ¿Eliminar <span className="text-cinema-red font-semibold">{movie.title}</span>?
-          </p>
+          <p className="text-white text-sm font-body text-center">¿Eliminar <span className="text-cinema-red font-semibold">{movie.title}</span>?</p>
           <div className="flex gap-2">
-            <button 
-              onClick={() => { onDelete(movie.id); setShowConfirm(false) }}
-              className="bg-cinema-red text-white text-xs font-body px-4 py-2 rounded hover:bg-red-700 transition-colors"
-            >Eliminar</button>
-            <button 
-              onClick={() => setShowConfirm(false)}
-              className="bg-white/10 text-white text-xs font-body px-4 py-2 rounded hover:bg-white/20 transition-colors"
-            >Cancelar</button>
+            <button onClick={() => { onDelete(movie.id); setShowConfirm(false) }} className="bg-cinema-red text-white text-xs font-body px-4 py-2 rounded hover:bg-red-700 transition-colors">Eliminar</button>
+            <button onClick={() => setShowConfirm(false)} className="bg-white/10 text-white text-xs font-body px-4 py-2 rounded hover:bg-white/20 transition-colors">Cancelar</button>
           </div>
         </div>
       )}

@@ -35,26 +35,13 @@ export default function App() {
           <Route path="/" element={<Layout showNav={false}><Home /></Layout>} />
           <Route path="/login" element={<Layout showNav={false}><Login /></Layout>} />
           <Route path="/register" element={<Layout showNav={false}><Register /></Layout>} />
-          <Route path="/catalog" element={<PrivateLayout><Catalog /></PrivateLayout>} />
+          <Route path="/catalog" element={<PrivateLayout><Catalog showOnlyMine={true} /></PrivateLayout>} />
+          <Route path="/community" element={<PrivateLayout><Catalog showOnlyMine={false} /></PrivateLayout>} />
           <Route path="/stats" element={<PrivateLayout><Stats /></PrivateLayout>} />
           <Route path="/profile" element={<PrivateLayout><Profile /></PrivateLayout>} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<Navigate to="/community" replace />} />
         </Routes>
-
-        <Toaster
-          position="bottom-right"
-          toastOptions={{
-            style: {
-              background: '#1a1a1a',
-              color: '#fff',
-              border: '1px solid rgba(255,255,255,0.1)',
-              fontFamily: 'DM Sans, sans-serif',
-              fontSize: '14px',
-            },
-            success: { iconTheme: { primary: '#22c55e', secondary: '#fff' } },
-            error: { iconTheme: { primary: '#e8192c', secondary: '#fff' } },
-          }}
-        />
+        <Toaster position="bottom-right" toastOptions={{ style: { background: '#1a1a1a', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', fontFamily: 'DM Sans, sans-serif', fontSize: '14px' }, success: { iconTheme: { primary: '#22c55e', secondary: '#fff' } }, error: { iconTheme: { primary: '#e8192c', secondary: '#fff' } } }} />
       </AuthProvider>
     </BrowserRouter>
   )
